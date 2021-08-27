@@ -2,6 +2,10 @@ export TERM="xterm-256color"
 export DEFAULT_USER="$USER"
 export EDITOR='vim'
 export PATH="$PATH:$HOME/.bin/"
+export ANTIBODY_HOME="$HOME/.antibody"
+export FZF_BASE=/path/to/fzf/install/dir
+export LOCALENV_PATH=${HOME}/carousell-localenv
+export PATH="${LOCALENV_PATH}/localenv:$PATH"
 
 # History
 HISTFILE=~/.zsh_history
@@ -44,17 +48,37 @@ antibody bundle < ~/.antibody.plugins.txt
 compdef _hosts ssh-multi
 
 # Golang
-export GOPATH="$HOME/go"
+export GOPATH="$HOME/code/go"
 export GOBIN="$GOPATH/bin"
 export PATH="$GOBIN:$PATH"
 export PKG_CONFIG_PATH="/usr/local/opt/libffi/lib/pkgconfig"
 export CGO_CFLAGS_ALLOW=-Xpreprocessor
 
+
 # Python
-export PIP_REQUIRE_VIRTUALENV=true
-export PATH="$HOME/.pyenv/bin:$PATH"
+export PIP_REQUIRE_VIRTUALENV=false
+
+
+# (The below instructions are intended for common
+# shell setups. See the README for more guidance
+# if they don't apply and/or don't work for you.)
+
+# Add pyenv executable to PATH and
+# enable shims by adding the following
+# to ~/.profile and ~/.zprofile:
+
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init --path)"
+
+# Load pyenv into the shell by adding
+# the following to ~/.zshrc:
+
 eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
+
+# Make sure to restart your entire logon session
+# for changes to profile files to take effect.
+
 
 # Ruby
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
@@ -66,3 +90,9 @@ if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 source ~/.aliases
 [ -f ~/.aliases.local ] && source ~/.aliases.local
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/praveen/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/praveen/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/praveen/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/praveen/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+

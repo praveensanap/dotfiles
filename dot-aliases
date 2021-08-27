@@ -8,3 +8,59 @@ alias gtree="git log --graph --abbrev-commit --decorate --format=format:'%C(bold
 
 alias jql="jq -c -R -r '. as \$line | try fromjson catch \$line'"
 alias jqb="jq -R -r '. as \$line | try fromjson catch \$line'"
+
+alias code='cd ~/code/go/src/github.com/carousell'
+alias gcdata='gcloud container clusters get-credentials data-k8s-prod-1 --zone asia-east1'
+alias gcdatastage='gcloud container clusters get-credentials stage-data-k8s-prod-1 --zone asia-east1-c'
+alias gcprod='get-credentials ms-k8s-prod --zone asia-east1 --project thecarousell.com:api-project-11554775814'
+alias gcstage='gcloud container clusters get-credentials staging-2 --zone asia-east1-c --project carousell-staging'
+alias gcstagemain='gcloud container clusters get-credentials staging-main-k118 --zone asia-east1-c --project carousell-staging'
+alias gcprodgw='gcloud container clusters get-credentials carousell-a-k-114 --region asia-east1 --project thecarousell.com:api-project-11554775814'
+alias gcprodmsg='gcloud container clusters get-credentials messaging-k118 --region asia-east1 --project thecarousell.com:api-project-11554775814'
+alias gcstagemsg='gcloud container clusters get-credentials staging-messaging-k118 --zone asia-east1-c --project carousell-staging'
+alias gcprodmain='gcloud container clusters get-credentials main-k118 --region asia-east1 --project thecarousell.com:api-project-11554775814'
+alias gcqa1='gcloud container clusters get-credentials qa-1 --zone asia-east1-c --project carousell-staging'pick 9ab94d75 fix api-gw
+alias copyconfig="kubectl cp $1:/opt/config/$2.toml /opt/config/$2.toml"
+
+alias cppod="grep -v NAME | head -n 1 | awk '{print $1}' | pbcopy"
+# docker aliases
+alias d="docker"
+alias dps="docker ps"
+
+function gpreceipt(){
+    token=$(gptoken)
+    receipt=$1
+    URL=https://www.googleapis.com/androidpublisher/v3/applications/com.thecarousell.Carousell/purchases/subscriptions/com.thecarousell.carousell.caroubiz.sg.gc.lite/tokens/"$receipt"?access_token=$(gptoken)
+    curl -sS -X GET $URL
+}
+
+function dumplogs(){
+    pods=$(kubectl get pods -n $1 | grep  $2 | awk '{print $1}')
+    echo "found $pods"
+    now=`date +"%m-%d-%Y-%T"`
+    cd ~/logs
+    incidentFolder="incident-$now/"
+    mkdir $incidentFolder
+    cd $incidentFolder
+    while IFS= read -r pod; do
+	echo "copying out logs of pod: $pod"
+	kubectl cp -n $1 $pod:/tmp/carousell-stdout.log $pod.out.log
+	echo "copying err logs of pod: $pod"
+	kubectl cp -n $1$pod:/tmp/carousell-stderr.log $pod.err.log
+    done <<<"$pods"
+}
+
+alias inspectsubslogs='cat * | grep -v "error\":null" | grep -v "UserSubs\":\[" | grep -v "Segment returned" | grep -v INSERT'
+
+function update_etc_hosts_with_gcloud() {
+  nodes=$(gcloud compute instances list --sort-by name --format 'table[no-heading](networkInterfaces[0].networkIP, name, zone, status)'  |awk '{print $1,$2}')
+  echo $nodes
+  if [ "$nodes" ]; then
+    cp ~/tmp/hosts_bkp ~/tmp/hosts
+    echo "127.0.0.1 localhost" >> ~/tmp/hosts
+    echo ${nodes} >> ~/tmp/hosts
+    sudo cp ~/tmp/hosts /etc/hosts
+  else
+    echo "Couldn't fetch details from GCloud."
+  fi
+}
