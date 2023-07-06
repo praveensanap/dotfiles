@@ -7,8 +7,8 @@ selection=($(kubectl --context ${k8s_context} get pods | grep -v ^NAME | fzf --m
 if [ ${#selection[@]} -eq 1 ]; then
     kubectl exec --context ${k8s_context} -ti ${selection[0]} -- bash
 elif [ ${#selection[@]} -gt 1 ]; then
-    # ssh-kube-multi ${selection[@]}
-    echo "Not supported"
+    ssh-kube-multi ${selection[@]}
+    # echo "Not supported"
 else
     exit 0
 fi

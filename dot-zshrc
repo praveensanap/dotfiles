@@ -7,6 +7,8 @@ export FZF_BASE=/path/to/fzf/install/dir
 export LOCALENV_PATH=${HOME}/carousell-localenv
 export PATH="${LOCALENV_PATH}/localenv:$PATH"
 
+[[ $EMACS = t ]] && unsetopt zle
+
 # History
 HISTFILE=~/.zsh_history
 SAVEHIST=50000
@@ -34,6 +36,7 @@ zstyle ':completion:::::' completer _expand _complete _ignored _approximate # en
 # Powerlevel9k Theme
 source ${HOME}/.powerlevel9k
 
+
 # Oh-my-zsh for Antibody
 DISABLE_AUTO_UPDATE=true
 ZSH="$(antibody home)/https-COLON--SLASH--SLASH-github.com-SLASH-robbyrussell-SLASH-oh-my-zsh"
@@ -58,7 +61,11 @@ export CGO_CFLAGS_ALLOW=-Xpreprocessor
 # Python
 export PIP_REQUIRE_VIRTUALENV=false
 
+# kiali
+export KIALI_SOURCES="~/kiali_sources"
 
+# cargo
+export CARGO_NET_GIT_FETCH_WITH_CLI=true
 # (The below instructions are intended for common
 # shell setups. See the README for more guidance
 # if they don't apply and/or don't work for you.)
@@ -96,3 +103,17 @@ if [ -f '/Users/praveen/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Use
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/praveen/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/praveen/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
 
+autoload -U compinit; compinit
+
+
+function karowlinfo() {
+    karowl deployments render-context --env=prod --log=ERROR --refresh-repositories=false $1  | yq '.serviceMetadata.name +"/"+ .deploymentMetadata.name +","+ .serviceMetadata.owner +","+ .deploymentMetadata.git.url'
+}
+
+export PATH="$HOME/.poetry/bin:$PATH"
+
+
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+
+export PATH="/usr/local/opt/openjdk@8/bin:$PATH"

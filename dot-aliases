@@ -15,11 +15,12 @@ alias gcdatastage='gcloud container clusters get-credentials stage-data-k8s-prod
 alias gcprod='get-credentials ms-k8s-prod --zone asia-east1 --project thecarousell.com:api-project-11554775814'
 alias gcstage='gcloud container clusters get-credentials staging-2 --zone asia-east1-c --project carousell-staging'
 alias gcstagemain='gcloud container clusters get-credentials staging-main-k118 --zone asia-east1-c --project carousell-staging'
+alias gcfeature='gcloud container clusters get-credentials staging-feature-k118 --zone asia-east1-c --project carousell-staging'
 alias gcprodgw='gcloud container clusters get-credentials carousell-a-k-114 --region asia-east1 --project thecarousell.com:api-project-11554775814'
 alias gcprodmsg='gcloud container clusters get-credentials messaging-k118 --region asia-east1 --project thecarousell.com:api-project-11554775814'
-alias gcstagemsg='gcloud container clusters get-credentials staging-messaging-k118 --zone asia-east1-c --project carousell-staging'
+alias gcstagemsg='gcloud container clusters get-credentials staging-messaging-k122 --zone asia-east1-c --project carousell-staging'
 alias gcprodmain='gcloud container clusters get-credentials main-k118 --region asia-east1 --project thecarousell.com:api-project-11554775814'
-alias gcqa1='gcloud container clusters get-credentials qa-1 --zone asia-east1-c --project carousell-staging'pick 9ab94d75 fix api-gw
+alias gcqa1='gcloud container clusters get-credentials qa-1 --zone asia-east1-c --project carousell-staging'
 alias copyconfig="kubectl cp $1:/opt/config/$2.toml /opt/config/$2.toml"
 
 alias cppod="grep -v NAME | head -n 1 | awk '{print $1}' | pbcopy"
@@ -46,7 +47,7 @@ function dumplogs(){
 	echo "copying out logs of pod: $pod"
 	kubectl cp -n $1 $pod:/tmp/carousell-stdout.log $pod.out.log
 	echo "copying err logs of pod: $pod"
-	kubectl cp -n $1$pod:/tmp/carousell-stderr.log $pod.err.log
+	kubectl cp -n $1 $pod:/tmp/carousell-stderr.log $pod.err.log
     done <<<"$pods"
 }
 
